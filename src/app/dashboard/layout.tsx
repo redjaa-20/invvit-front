@@ -1,4 +1,5 @@
 import { Navbar } from "src/components/main/navbar";
+import { Toaster } from "src/components/ui/sonner";
 
 // ------------------------------------------------------------------
 
@@ -16,6 +17,8 @@ export default function DashboardLayout({
         <main className="flex-1 px-5 xl:px-0 pt-5 pb-25 md:pt-25 md:pb-0">
           {children}
         </main>
+
+        <Toaster position="top-center" />
       </div>
     </div>
   );

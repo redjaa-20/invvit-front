@@ -3,6 +3,7 @@ import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "src/components/ui/button";
 import {
   Drawer,
@@ -65,6 +66,7 @@ export function InvoiceCreateEditMobileView() {
   const onSubmit = async (data: FormValues) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     console.log(methods.getValues());
+    toast.success("Event has been created");
     router.push(paths.dashboard.invoice.root);
   };
 

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Badge } from "src/components/ui/badge";
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
@@ -16,6 +17,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -46,6 +48,8 @@ export function InvoiceListMobileView() {
 
   const [openInvoiceDrawer, setOpenInvoiceDrawer] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
+
+  const [openDeleteDrawer, setOpenDeleteDrawer] = useState(false);
 
   const handleSelectStatus = (status: string) => {
     setFilterStatus(status);
@@ -153,7 +157,7 @@ export function InvoiceListMobileView() {
             <Button
               className="h-12 w-full justify-between"
               variant="secondary"
-              onClick={() => alert("Ubah invoice")}
+              onClick={() => toast.success("Event has been created")}
             >
               Ubah
               <EditIcon />
@@ -172,10 +176,8 @@ export function InvoiceListMobileView() {
               className="h-12 w-full justify-between"
               variant="secondary"
               onClick={() => {
-                if (confirm("Yakin ingin menghapus invoice ini?")) {
-                  alert("Invoice dihapus");
-                  setOpenInvoiceDrawer(false);
-                }
+                setOpenDeleteDrawer(true);
+                // setOpenInvoiceDrawer(false);
               }}
             >
               Hapus
@@ -185,6 +187,33 @@ export function InvoiceListMobileView() {
           <DrawerFooter>
             <DrawerClose asChild>
               <Button className="h-12 rounded-full">Tutup</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      <Drawer open={openDeleteDrawer} onOpenChange={setOpenDeleteDrawer}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Konfirmasi</DrawerTitle>
+            <DrawerDescription>
+              Apakah Anda yakin ingin menghapus?
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <Button
+              className="h-11 rounded-full"
+              onClick={() => {
+                setOpenDeleteDrawer(false);
+                setOpenInvoiceDrawer(false);
+              }}
+            >
+              Hapus
+            </Button>
+            <DrawerClose asChild>
+              <Button variant="ghost" className="h-11">
+                Batal
+              </Button>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
