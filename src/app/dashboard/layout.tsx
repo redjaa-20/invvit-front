@@ -13,7 +13,9 @@ export default function DashboardLayout({
         {/* Navbar */}
         <Navbar />
         {/* Main content */}
-        <main className="flex-1 px-5 xl:px-0 pt-20 md:pt-25">{children}</main>
+        <main className="flex-1 px-5 xl:px-0 pt-5 pb-25 md:pt-25 md:pb-0">
+          {children}
+        </main>
       </div>
     </div>
   );

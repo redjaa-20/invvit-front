@@ -1,0 +1,165 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon, SearchIcon } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "src/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "src/components/ui/drawer";
+import { Form } from "src/components/ui/form";
+import { Separator } from "src/components/ui/separator";
+import { paths } from "src/routes/paths";
+import z from "zod";
+
+// ------------------------------------------------------------------
+
+const InvoiceSchema = z.object({
+  firstName: z.string().min(1, { message: "Masukkan nama depan" }),
+  lastName: z.string().min(1, { message: "Masukkan nama belakang" }),
+  email: z.string().email({ message: "Email tidak valid" }),
+  phone: z.string().min(1, { message: "Masukkan nomor telepon" }),
+  price: z.string().min(1, { message: "Masukkan harga" }),
+});
+
+// ------------------------------------------------------------------
+
+export function InvoiceListMobileView() {
+  const defaultValues = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    price: "",
+  };
+
+  type FormValues = z.infer<typeof InvoiceSchema>;
+
+  const methods = useForm<FormValues>({
+    resolver: zodResolver(InvoiceSchema),
+    defaultValues,
+  });
+
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting, isDirty },
+  } = methods;
+
+  const onSubmit = async (data: FormValues) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    console.log(methods.getValues());
+  };
+
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
+
+  const newInvoiceDrawer = () => (
+    <>
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>
+          <Button className="h-12 w-12 fixed bottom-22 right-5 rounded-full">
+            <PlusIcon className="size-6" />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader className="fixed top-2.5 w-full bg-background rounded-t-lg border-b">
+            <DrawerTitle>Buat invoice</DrawerTitle>
+          </DrawerHeader>
+          <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <div className="h-[500px] pt-18 pb-10 px-7 overflow-auto">
+              <Form.Input name="firstName" label="Nama depan" />
+
+              <Separator className="mt-4 mb-7" />
+
+              <Form.Input name="lastName" label="Nama belakang" />
+
+              <Separator className="mt-4 mb-7" />
+
+              <Form.Input name="email" label="Email" />
+
+              <Separator className="mt-4 mb-7" />
+
+              <Form.Input name="phone" label="No. telepon" />
+
+              <Separator className="mt-4 mb-7" />
+
+              <Form.Input name="price" label="Harga" />
+
+              <Separator className="mt-4 mb-7" />
+            </div>
+            {isDirty && (
+              <DrawerFooter className="fixed bottom-0 w-full bg-background flex-row justify-end py-3 px-7 border-t">
+                <DrawerClose asChild>
+                  <Button size="sm" variant="outline">
+                    Batal
+                  </Button>
+                </DrawerClose>
+                <Button type="submit" size="sm" disabled={isSubmitting}>
+                  Simpan
+                </Button>
+              </DrawerFooter>
+            )}
+          </Form>
+        </DrawerContent>
+      </Drawer>
+    </>
+  );
+
+  return (
+    <div className="relative flex flex-col">
+      <div className="fixed top-0 left-0 flex items-center justify-between w-full h-[60px] pl-5 pr-2">
+        <h1 className="text-md font-bold">Invoice</h1>
+        <div className="flex items-center gap-2">
+          <Button
+            size="icon"
+            variant="ghost"
+            className="rounded-full"
+            onClick={() => {
+              alert("Mantap");
+            }}
+          >
+            <SearchIcon className="size-5" />
+          </Button>
+        </div>
+        {/* {newInvoiceDrawer()} */}
+        <Link
+          href={paths.dashboard.invoice.create}
+          className="fixed bottom-22 right-5"
+        >
+          <Button className="h-12 w-12 rounded-full">
+            <PlusIcon className="size-6" />
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// function ProfileForm({ className }: React.ComponentProps<"form">) {
+//   return (
+//     <form className={cn("grid items-start gap-6", className)}>
+//       <div className="grid gap-3">
+//         <Label htmlFor="email">Email</Label>
+//         <Input type="email" id="email" defaultValue="shadcn@example.com" />
+//       </div>
+//       <div className="grid gap-3">
+//         <Label htmlFor="username">Username</Label>
+//         <Input id="username" defaultValue="@shadcn" />
+//       </div>
+//       <Button type="submit">Save changes</Button>
+//     </form>
+//   );
+// }

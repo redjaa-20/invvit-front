@@ -17,6 +17,7 @@ export const paths = {
     root: ROOTS.DASHBOARD,
     invoice: {
       root: `${ROOTS.DASHBOARD}/invoice`,
+      create: `${ROOTS.DASHBOARD}/invoice/create`,
     },
     template: {
       root: `${ROOTS.DASHBOARD}/template`,

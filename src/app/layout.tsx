@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Onest } from "next/font/google";
 import "./globals.css";
+import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "src/components/theme/theme-provider";
 
 // ------------------------------------------------------------------
@@ -46,6 +47,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <NextTopLoader
+            color="#1d4ed8"
+            crawlSpeed={200}
+            showSpinner={false}
+            easing="ease"
+            zIndex={1600}
+          />
           {children}
         </ThemeProvider>
       </body>
