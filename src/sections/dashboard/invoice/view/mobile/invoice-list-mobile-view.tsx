@@ -8,7 +8,7 @@ import {
   XIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "src/components/ui/badge";
 import { Button } from "src/components/ui/button";
@@ -22,12 +22,28 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "src/components/ui/drawer";
-import { Separator } from "src/components/ui/separator";
 import { paths } from "src/routes/paths";
 
 // ------------------------------------------------------------------
 
 const statuses = ["Semua", "Aktif", "Tertunda", "Kedaluarsa"];
+
+const invoices = [
+  {
+    id: 1,
+    name: "Boby Agy Wijaya",
+    invoiceCode: "INV2511090133",
+    price: 250000,
+    status: "aktif",
+  },
+  {
+    id: 2,
+    name: "Rahmat Alfarizqy",
+    invoiceCode: "INV2511091456",
+    price: 250000,
+    status: "tertunda",
+  },
+];
 
 // ------------------------------------------------------------------
 
@@ -50,6 +66,20 @@ export function InvoiceListMobileView() {
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
 
   const [openDeleteDrawer, setOpenDeleteDrawer] = useState(false);
+
+  const [filteredInvoices, setFilteredInvoices] = useState(invoices);
+
+  useEffect(() => {
+    if (filterStatus === "Semua") {
+      setFilteredInvoices(invoices);
+    } else {
+      setFilteredInvoices(
+        invoices.filter(
+          (invoice) => invoice.status === filterStatus.toLowerCase()
+        )
+      );
+    }
+  }, [filterStatus]);
 
   const handleSelectStatus = (status: string) => {
     setFilterStatus(status);
@@ -89,25 +119,46 @@ export function InvoiceListMobileView() {
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
 
-        <Card
-          className="py-4 text-sm"
-          onClick={() => handleOpenInvoiceDrawer("INV2511090133")}
-        >
-          <CardContent>
-            <div className="flex justify-between">
-              <div className="space-y-2">
-                <p>Boby Agy Wijaya</p>
-                <p className="text-muted-foreground">INV2511090133</p>
-                <p className="text-base font-semibold">Rp. 250.000</p>
-              </div>
-              <div>
-                <Badge className="bg-green-500 text-white dark:bg-green-600">
-                  Aktif
-                </Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="space-y-4">
+          {filteredInvoices.map((invoice) => {
+            const badgeColor =
+              invoice.status === "aktif"
+                ? "bg-green-500 dark:bg-green-600"
+                : invoice.status === "tertunda"
+                ? "bg-yellow-500 dark:bg-yellow-600"
+                : invoice.status === "kedaluarsa"
+                ? "bg-red-500 dark:bg-red-600"
+                : "bg-gray-400 dark:bg-gray-500";
+
+            return (
+              <Card
+                key={invoice.id}
+                className="py-4 text-sm"
+                onClick={() => handleOpenInvoiceDrawer(invoice.invoiceCode)}
+              >
+                <CardContent>
+                  <div className="flex justify-between">
+                    <div className="space-y-2">
+                      <p>{invoice.name}</p>
+                      <p className="text-muted-foreground">
+                        {invoice.invoiceCode}
+                      </p>
+                      <p className="text-base font-semibold">
+                        Rp. {invoice.price}
+                      </p>
+                    </div>
+                    <div>
+                      <Badge className={`text-white ${badgeColor}`}>
+                        {invoice.status.charAt(0).toUpperCase() +
+                          invoice.status.slice(1)}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
 
       <NewInvoiceButton />
